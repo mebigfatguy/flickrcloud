@@ -1,0 +1,66 @@
+<project name="flickrcloud" default="jar" basedir=".">
+    
+    <property file="user.properties" />
+    <property file="build.properties" />
+    
+    <property name="src.dir" value="${basedir}/src" />
+    <property name="classes.dir" value="${basedir}/classes" />
+    <property name="lib.dir" value="${basedir}/lib" />
+    <property name="resources.dir" value="${basedir}/resources" />
+    <property name="javac.source" value="1.7" />
+    <property name="javac.target" value="1.7" />
+    <property name="javac.deprecation" value="on" />
+    <property name="javac.debug" value="on" />
+    <property name="proxy.server" value="" />
+    <property name="flickrcloud.version" value="0.1.0" />
+
+    <path id="flickrcloud.classpath">
+        <pathelement location="${classes.dir}"/>
+    </path>
+        
+    <target name="init">
+        <mkdir dir="${classes.dir}"/>
+    </target>
+        
+    <target name="clean">
+        <delete dir="${classes.dir}"/>
+        <delete file="${basedir}/flickrcloud-${flickrcloud.version}.jar" />
+        <delete file="${basedir}/flickrcloud-${flickrcloud.version}-sources.jar" />
+    </target>
+        
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" source="${javac.source}" target="${javac.target}" deprecation="${javac.deprecation}" debug="${javac.debug}" includeantruntime="false">
+            <classpath refid="flickrcloud.classpath" />
+        </javac>
+    	<copy todir="${classes.dir}">
+    		<fileset dir="${resources.dir}"/>
+    	</copy>
+    </target>
+    
+    <target name="jar" depends="init,compile">
+        <jar destfile="${basedir}/flickrcloud-${flickrcloud.version}.jar">
+            <fileset dir="${classes.dir}">
+                <include name="**/*.class" />
+                <include name="**/*.properties" />
+                <include name="**/*.png" />
+            </fileset>
+            <manifest>
+                <attribute name="flickrcloud-version" value="${flickrcloud.version}" />
+                <attribute name="Main-Class" value="com.mebigfatguy.flickrcloud.FlickrCloud" />
+                <attribute name="Bundle-ManifestVersion" value="2" />
+                <attribute name="Bundle-Name" value="flickrcloud" />
+                <attribute name="Bundle-SymbolicName" value="flickrcloud; singleton:=true" />
+                <attribute name="Bundle-Version" value="${flickrcloud.version}" />
+                <attribute name="Bundle-ClassPath" value="." />
+                <attribute name="Bundle-Vendor" value="flickrcloud Project" />
+                <attribute name="Bundle-ActivationPolicy" value="lazy" />
+                <attribute name="Export-Package" value="com.mebigfatguy.flickrcloud" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="run" depends="jar">
+        <java classname="com.mebigfatguy.flickrcloud.flickrcloud" fork="true" classpathref="flickrcloud.classpath"/>
+    </target>
+    
+</project>
