@@ -66,7 +66,7 @@ public class FlickrDropTargetListener implements DropTargetListener {
             Transferable t = dtde.getTransferable();
             if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                 PngGenerator generator = new PngGenerator();
-                Map<String, Image> images = generator.generate((List<File>) t.getTransferData(DataFlavor.javaFileListFlavor));
+                Map<String, File> images = generator.generate((List<File>) t.getTransferData(DataFlavor.javaFileListFlavor));
                 FlickrPublisher publisher = new FlickrPublisher();
                 publisher.publish(images);
                 target.add(images.keySet());

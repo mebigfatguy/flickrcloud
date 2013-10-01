@@ -17,7 +17,6 @@
  */
 package com.mebigfatguy.flickrcloud;
 
-import java.awt.Image;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -25,13 +24,30 @@ import java.util.Map;
 
 public class PngGenerator {
 
-    public Map<String, Image> generate(List<File> transferData) {
-        Map<String, Image> images = new HashMap<String, Image>();
-        for (File f : transferData) {
-            images.put(f.getName(), null);
+    public Map<String, File> generate(List<File> transferData) {
+        Map<String, File> images = new HashMap<String, File>();
+        for (File sourceFile : transferData) {
+            File f;
+            if (sourceFile.isDirectory()) {
+                f = createDirectoryZip(sourceFile);
+            } else {
+                f = sourceFile;
+            }
+            
+            f = createImageFile(f);
+            
+            images.put(f.getName(), f);
         }
         
         return images;
+    }
+    
+    private File createDirectoryZip(File directory) {
+        return null;
+    }
+    
+    private File createImageFile(File file) {
+        return null;
     }
 
 }
