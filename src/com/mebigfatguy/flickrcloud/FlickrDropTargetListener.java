@@ -34,15 +34,15 @@ import javax.swing.JOptionPane;
 
 public class FlickrDropTargetListener implements DropTargetListener {
 
-    private DropLabel comp;
+    private FCDropTarget target;
     
-    public FlickrDropTargetListener(DropLabel component) {
-        comp = component;
+    public FlickrDropTargetListener(FCDropTarget component) {
+        target = component;
     }
     
     @Override
     public void dragEnter(DropTargetDragEvent dtde) {
-        comp.setHilite();
+        target.setHilite();
         dtde.acceptDrag(DnDConstants.ACTION_COPY);
     }
 
@@ -56,7 +56,7 @@ public class FlickrDropTargetListener implements DropTargetListener {
 
     @Override
     public void dragExit(DropTargetEvent dte) {
-        comp.setNormal();
+        target.setNormal();
     }
 
     @Override
@@ -69,12 +69,13 @@ public class FlickrDropTargetListener implements DropTargetListener {
                 Map<String, Image> images = generator.generate((List<File>) t.getTransferData(DataFlavor.javaFileListFlavor));
                 FlickrPublisher publisher = new FlickrPublisher();
                 publisher.publish(images);
+                target.add(images.keySet());
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(comp, e.getClass().getSimpleName() + ": " + e.getMessage());
+            JOptionPane.showMessageDialog(target.getDropOwner(), e.getClass().getSimpleName() + ": " + e.getMessage());
         } finally {
-            comp.setNormal();
+            target.setNormal();
         }
     }
 }

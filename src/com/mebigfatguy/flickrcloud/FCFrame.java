@@ -17,21 +17,24 @@
  */
 package com.mebigfatguy.flickrcloud;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.dnd.DropTarget;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
-public class FCFrame extends JFrame {
+public class FCFrame extends JFrame implements FCDropTarget  {
 	
     private static final long serialVersionUID = 4415151392343515256L;
     
     private final DropLabel store;
 	private final DropTarget dropTarget;
-	private final JList files;
+	private final FileListModel model;
+	private final JList<String> files;
 
 	public FCFrame() {
 		super(FCBundle.getString(FCBundle.Keys.TITLE));
@@ -41,14 +44,36 @@ public class FCFrame extends JFrame {
 
 		store = new DropLabel();
 
-		dropTarget = new DropTarget(store, new FlickrDropTargetListener(store));
+		dropTarget = new DropTarget(store, new FlickrDropTargetListener(this));
 		store.setDropTarget(dropTarget);
 		
-		files = new JList();
+		model = new FileListModel();
+		files = new JList<String>(model);
 		files.setPreferredSize(store.getPreferredSize());
 
 		cp.add(store);
 		cp.add(new JScrollPane(files));
 		pack();
 	}
+
+    @Override
+    public void setHilite() {
+        store.setHilite();
+        
+    }
+
+    @Override
+    public void setNormal() {
+        store.setNormal();
+    }
+
+    @Override
+    public void add(Set<String> descriptors) {
+        model.addFiles(descriptors);
+    }
+
+    @Override
+    public Component getDropOwner() {
+        return this;
+    }
 }

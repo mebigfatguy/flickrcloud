@@ -17,21 +17,12 @@
  */
 package com.mebigfatguy.flickrcloud;
 
-import java.awt.Image;
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.awt.Component;
+import java.util.Set;
 
-public class PngGenerator {
-
-    public Map<String, Image> generate(List<File> transferData) {
-        Map<String, Image> images = new HashMap<String, Image>();
-        for (File f : transferData) {
-            images.put(f.getName(), null);
-        }
-        
-        return images;
-    }
-
+public interface FCDropTarget {
+    void setHilite();
+    void setNormal();
+    void add(Set<String> descriptor);
+    Component getDropOwner();
 }
