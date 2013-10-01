@@ -94,7 +94,7 @@ public class PngGenerator {
     }
     
     private File createImageFile(File file) {
-        return null;
+        return file;
     }
 
 }
