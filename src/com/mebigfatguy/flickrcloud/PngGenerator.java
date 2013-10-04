@@ -20,14 +20,18 @@ package com.mebigfatguy.flickrcloud;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -36,6 +40,7 @@ public class PngGenerator {
     private static byte[] PNG_HEADER = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
     private static byte[] L13 = { 0, 0, 0, 0x0D };
     private static byte[] IHDR = "IHDR".getBytes();
+    private static byte[] IDAT = "IDAT".getBytes();
     private static byte[] IEND = "IEND".getBytes();
     
     public Map<String, File> generate(List<File> transferData) throws IOException {
@@ -104,41 +109,103 @@ public class PngGenerator {
         File pngFile = File.createTempFile(file.getName(), ".png");
         pngFile.deleteOnExit();
         
-        long sourceLength = file.length() / 3;
-        int width = (int) Math.sqrt(sourceLength);
-        int height = (int) (sourceLength / width) + 1;
+        long sourceLength = file.length();
+        long numPixels = sourceLength / 3;
+        int width = (int) Math.sqrt(numPixels);
+        int height = (int) ((numPixels + width - 1) / width);
         
-        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(pngFile))) {
-            bos.write(PNG_HEADER);
+        try (RandomAccessFile raf = new RandomAccessFile(pngFile, "rw")) {
+            raf.write(PNG_HEADER);
 
-            bos.write(genIHDR(width, height));
+            writeIHDR(raf, width, height);
             
-            writeInt(bos, 0);
-            bos.write(IEND);
+            writeIDAT(raf, file, width, height);
+            
+            writeIEND(raf);
         }
         
         return pngFile;
     }
-    
-    private byte[] genIHDR(int width, int height) throws IOException {
+
+    private void writeIHDR(RandomAccessFile raf, int width, int height) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        writeInt(baos, 13);
-        baos.write(IHDR);
-        writeInt(baos, width);
-        writeInt(baos, height);
-        baos.write(8);
-        baos.write(2);
-        baos.write(0);            
-        baos.write(0);            
-        baos.write(0);
+        DataOutputStream dos = new DataOutputStream(baos);
         
-        return baos.toByteArray();
+        dos.writeInt(13);
+        dos.write(IHDR);
+        dos.writeInt(width);
+        dos.writeInt(height);
+        dos.write(8);
+        dos.write(2);
+        dos.write(0);
+        dos.write(0);
+        dos.write(0);
+        
+        dos.flush();
+        
+        byte[] data = baos.toByteArray();
+
+        CRC32 crc = new CRC32();
+        crc.update(data, 4, data.length - 4);
+
+        dos.writeInt((int) crc.getValue());
+        dos.flush();
+        
+        raf.write(baos.toByteArray());
     }
     
-    private void writeInt(OutputStream is, int value) throws IOException {
-        is.write((value >> 24) & 0xFF);
-        is.write((value >> 16) & 0xFF);     
-        is.write((value >> 8) & 0xFF);  
-        is.write((value >> 0) & 0xFF); 
+    
+    private void writeIDAT(RandomAccessFile raf, File file, int width, int height) throws IOException {
+        byte[] scanLine = new byte[width * 3 + 1];
+        CRC32 crc = new CRC32();
+        
+        raf.write(BigInteger.valueOf(width * 3 * height).toByteArray());
+        raf.write(IDAT);
+        
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+            
+            while (readScanLine(bis, scanLine)) {
+                crc.update(scanLine);
+                
+                raf.write(scanLine);
+            }
+        }
+        
+        raf.write(BigInteger.valueOf((int) crc.getValue()).toByteArray()); 
+    }
+    
+    private void writeIEND(RandomAccessFile raf) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(baos);
+        
+        dos.writeInt(0);
+        dos.write(IEND);
+        
+        dos.flush();
+        
+        byte[] data = baos.toByteArray();
+
+        CRC32 crc = new CRC32();
+        crc.update(data, 4, data.length - 4);
+
+        dos.writeInt((int) crc.getValue());
+        dos.flush();
+        
+        raf.write(baos.toByteArray());
+    }
+    
+    private boolean readScanLine(InputStream is, byte[] scanLine) throws IOException {
+        
+        int start = 1;
+        int length = scanLine.length - 1;
+        
+        int read = is.read(scanLine, start, length);
+        while ((length > 0) && (read >= 0)) {
+            start += read;
+            length -= read;
+            read = is.read(scanLine, start, length);
+        }
+        
+        return start > 1;
     }
 }
