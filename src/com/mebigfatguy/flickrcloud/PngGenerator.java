@@ -27,7 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,7 +159,7 @@ public class PngGenerator {
         byte[] scanLine = new byte[width * 3 + 1];
         CRC32 crc = new CRC32();
         
-        raf.write(BigInteger.valueOf(width * 3 * height).toByteArray());
+        raf.write(ByteBuffer.allocate(4).putInt(width * 3 * height).array());
         raf.write(IDAT);
         
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
@@ -171,7 +171,7 @@ public class PngGenerator {
             }
         }
         
-        raf.write(BigInteger.valueOf((int) crc.getValue()).toByteArray()); 
+        raf.write(ByteBuffer.allocate(4).putInt((int) crc.getValue()).array());
     }
     
     private void writeIEND(RandomAccessFile raf) throws IOException {
