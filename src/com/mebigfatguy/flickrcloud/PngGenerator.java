@@ -41,6 +41,7 @@ public class PngGenerator {
 
     private static byte[] PNG_HEADER = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
     private static byte[] IHDR = "IHDR".getBytes();
+    private static byte[] FLCD = "flCD".getBytes();
     private static byte[] IDAT = "IDAT".getBytes();
     private static byte[] IEND = "IEND".getBytes();
     
@@ -54,7 +55,7 @@ public class PngGenerator {
                 f = sourceFile;
             }
             
-            f = createImageFile(f);
+            f = createImageFile(f, sourceFile);
             
             images.put(f.getName(), f);
         }
@@ -106,7 +107,7 @@ public class PngGenerator {
         }
     }
     
-    private File createImageFile(File file) throws IOException {
+    private File createImageFile(File file, File sourceFile) throws IOException {
         File pngFile = File.createTempFile(file.getName(), ".png");
         pngFile.deleteOnExit();
         
@@ -120,6 +121,8 @@ public class PngGenerator {
 
             writeIHDR(raf, width, height);
             
+            writeFLCD(raf, file, sourceFile);
+            
             writeIDAT(raf, file, width, height);
             
             writeIEND(raf);
@@ -132,7 +135,7 @@ public class PngGenerator {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         
-        dos.writeInt(13);
+        dos.writeInt(4 + 4 + 1 + 1 + 1 + 1 + 1);
         dos.write(IHDR);
         dos.writeInt(width);
         dos.writeInt(height);
@@ -155,6 +158,32 @@ public class PngGenerator {
         out.write(baos.toByteArray());
     }
     
+    private void writeFLCD(DataOutput out, File file, File sourceFile) throws IOException {
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(baos);
+        
+        byte[] sourceFileName = sourceFile.getName().getBytes("UTF-8");
+        
+        dos.writeInt(8 + 4 + sourceFileName.length + 1);
+        dos.write(FLCD);
+        dos.writeLong(file.length());
+        dos.writeInt(sourceFileName.length);
+        dos.write(sourceFileName);
+        dos.write(file.equals(sourceFile) ? 0 : -1);
+        
+        dos.flush();
+        
+        byte[] data = baos.toByteArray();
+
+        CRC32 crc = new CRC32();
+        crc.update(data, 4, data.length - 4);
+
+        dos.writeInt((int) crc.getValue());
+        dos.flush();
+        
+        out.write(baos.toByteArray());
+    }
     
     private void writeIDAT(DataOutput out, File file, int width, int height) throws IOException {
         File scanFile = File.createTempFile(file.getName(), ".scan");
