@@ -40,7 +40,6 @@ import java.util.zip.ZipOutputStream;
 public class PngGenerator {
 
     private static byte[] PNG_HEADER = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
-    private static byte[] L13 = { 0, 0, 0, 0x0D };
     private static byte[] IHDR = "IHDR".getBytes();
     private static byte[] IDAT = "IDAT".getBytes();
     private static byte[] IEND = "IEND".getBytes();

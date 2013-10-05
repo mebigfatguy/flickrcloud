@@ -17,7 +17,6 @@
  */
 package com.mebigfatguy.flickrcloud;
 
-import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
