@@ -20,6 +20,7 @@ package com.mebigfatguy.flickrcloud;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -127,7 +128,7 @@ public class PngGenerator {
         return pngFile;
     }
 
-    private void writeIHDR(RandomAccessFile raf, int width, int height) throws IOException {
+    private void writeIHDR(DataOutput out, int width, int height) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         
@@ -151,30 +152,30 @@ public class PngGenerator {
         dos.writeInt((int) crc.getValue());
         dos.flush();
         
-        raf.write(baos.toByteArray());
+        out.write(baos.toByteArray());
     }
     
     
-    private void writeIDAT(RandomAccessFile raf, File file, int width, int height) throws IOException {
+    private void writeIDAT(DataOutput out, File file, int width, int height) throws IOException {
         byte[] scanLine = new byte[width * 3 + 1];
         CRC32 crc = new CRC32();
         
-        raf.write(ByteBuffer.allocate(4).putInt(width * 3 * height).array());
-        raf.write(IDAT);
+        out.write(ByteBuffer.allocate(4).putInt(width * 3 * height).array());
+        out.write(IDAT);
         
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
             
             while (readScanLine(bis, scanLine)) {
                 crc.update(scanLine);
                 
-                raf.write(scanLine);
+                out.write(scanLine);
             }
         }
         
-        raf.write(ByteBuffer.allocate(4).putInt((int) crc.getValue()).array());
+        out.write(ByteBuffer.allocate(4).putInt((int) crc.getValue()).array());
     }
     
-    private void writeIEND(RandomAccessFile raf) throws IOException {
+    private void writeIEND(DataOutput out) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         
@@ -191,7 +192,7 @@ public class PngGenerator {
         dos.writeInt((int) crc.getValue());
         dos.flush();
         
-        raf.write(baos.toByteArray());
+        out.write(baos.toByteArray());
     }
     
     private boolean readScanLine(InputStream is, byte[] scanLine) throws IOException {
