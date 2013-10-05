@@ -32,9 +32,7 @@ public class FCFrame extends JFrame implements FCDropTarget  {
     private static final long serialVersionUID = 4415151392343515256L;
     
     private final DropLabel store;
-	private final DropTarget dropTarget;
 	private final FileListModel model;
-	private final JList<String> files;
 
 	public FCFrame() {
 		super(FCBundle.getString(FCBundle.Keys.TITLE));
@@ -44,11 +42,11 @@ public class FCFrame extends JFrame implements FCDropTarget  {
 
 		store = new DropLabel();
 
-		dropTarget = new DropTarget(store, new FlickrDropTargetListener(this));
+		DropTarget dropTarget = new DropTarget(store, new FlickrDropTargetListener(this));
 		store.setDropTarget(dropTarget);
 		
 		model = new FileListModel();
-		files = new JList<String>(model);
+		JList<String> files = new JList<String>(model);
 		files.setPreferredSize(store.getPreferredSize());
 
 		cp.add(store);
