@@ -1,7 +1,8 @@
-<project name="flickrcloud" default="jar" basedir=".">
+<project name="flickrcloud" default="jar" basedir="." xmlns:yank="antlib:com.mebigfatguy.yank">
     
     <property file="user.properties" />
     <property file="build.properties" />
+    <property file="version.properties" />
     
     <property name="src.dir" value="${basedir}/src" />
     <property name="classes.dir" value="${basedir}/classes" />
@@ -16,9 +17,19 @@
 
     <path id="flickrcloud.classpath">
         <pathelement location="${classes.dir}"/>
+        <pathelement location="${lib.dir}/httpclient-${httpclient.version}"/>
+        <pathelement location="${lib.dir}/httpcore-${httpcore.version}"/>
     </path>
         
-    <target name="init">
+   <target name="yank">
+        <mkdir dir="${lib.dir}"/>
+        <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" proxyServer="${proxy.server}" source="true">
+            <server url="http://repo1.maven.org/maven2"/>
+            <generateVersions propertyFileName="${basedir}/version.properties" />
+        </yank:yank>
+    </target>
+
+    <target name="init" depends="yank">
         <mkdir dir="${classes.dir}"/>
     </target>
         
