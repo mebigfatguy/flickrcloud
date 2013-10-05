@@ -184,6 +184,8 @@ public class PngGenerator {
                 out.write(buffer, 0, length);
                 length = bis.read(buffer);
             }  
+        } finally {
+            scanFile.delete();
         }
 
         out.write(ByteBuffer.allocate(4).putInt((int) crc.getValue()).array());
