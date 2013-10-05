@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.CRC32;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -157,21 +158,35 @@ public class PngGenerator {
     
     
     private void writeIDAT(DataOutput out, File file, int width, int height) throws IOException {
+        File scanFile = File.createTempFile(file.getName(), ".scan");
+        scanFile.deleteOnExit();
+        
         byte[] scanLine = new byte[width * 3 + 1];
-        CRC32 crc = new CRC32();
         
-        out.write(ByteBuffer.allocate(4).putInt(width * 3 * height).array());
-        out.write(IDAT);
-        
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+             DeflaterOutputStream dos = new DeflaterOutputStream(new BufferedOutputStream(new FileOutputStream(scanFile)))) {
             
             while (readScanLine(bis, scanLine)) {
-                crc.update(scanLine);
-                
-                out.write(scanLine);
+                dos.write(scanLine);
             }
         }
         
+        out.write(ByteBuffer.allocate(4).putInt((int) scanFile.length()).array());
+        out.write(IDAT);
+        
+        CRC32 crc = new CRC32();
+        crc.update(IDAT);
+        byte[] buffer = new byte[4096];
+        
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(scanFile))) {
+            int length = bis.read(buffer);
+            while (length >= 0) {
+                crc.update(buffer, 0, length);
+                out.write(buffer, 0, length);
+                length = bis.read(buffer);
+            }  
+        }
+
         out.write(ByteBuffer.allocate(4).putInt((int) crc.getValue()).array());
     }
     
