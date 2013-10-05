@@ -1,0 +1,4 @@
+<Project projectName="flickrcloud">
+  <Jar>./classes</Jar>
+  <SrcDir>./src</SrcDir>
+</Project>
