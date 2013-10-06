@@ -45,6 +45,8 @@ public class PngGenerator {
     private static byte[] IDAT = "IDAT".getBytes();
     private static byte[] IEND = "IEND".getBytes();
     
+    private static final int MAX_IDAT_SIZE = 1024 * 1024;
+    
     public Map<String, File> generate(List<File> transferData) throws IOException {
         Map<String, File> images = new HashMap<String, File>();
         for (File sourceFile : transferData) {
@@ -123,7 +125,7 @@ public class PngGenerator {
             
             writeFLCD(raf, file, sourceFile);
             
-            writeIDAT(raf, file, width, height);
+            writeIDATs(raf, file, width, height);
             
             writeIEND(raf);
         }
@@ -185,7 +187,7 @@ public class PngGenerator {
         out.write(baos.toByteArray());
     }
     
-    private void writeIDAT(DataOutput out, File file, int width, int height) throws IOException {
+    private void writeIDATs(DataOutput out, File file, int width, int height) throws IOException {
         File scanFile = File.createTempFile(file.getName(), ".scan");
         scanFile.deleteOnExit();
         
@@ -199,23 +201,40 @@ public class PngGenerator {
             }
         }
         
-        out.write(ByteBuffer.allocate(4).putInt((int) scanFile.length()).array());
+        long length = scanFile.length();
+        
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(scanFile))) {
+            
+            while (length > MAX_IDAT_SIZE) {
+                writeIDAT(out, bis, MAX_IDAT_SIZE);
+                length -= MAX_IDAT_SIZE;
+            }
+            
+            if (length > 0) {
+                writeIDAT(out, bis, length);
+            }
+        } finally {
+            scanFile.delete();
+        }
+    }
+    
+    private void writeIDAT(DataOutput out, InputStream in, long remaining) throws IOException {
+        int idatSize = (int) Math.min(remaining, MAX_IDAT_SIZE);
+        out.write(ByteBuffer.allocate(4).putInt(idatSize).array());
         out.write(IDAT);
         
         CRC32 crc = new CRC32();
         crc.update(IDAT);
         byte[] buffer = new byte[4096];
         
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(scanFile))) {
-            int length = bis.read(buffer);
-            while (length >= 0) {
-                crc.update(buffer, 0, length);
-                out.write(buffer, 0, length);
-                length = bis.read(buffer);
-            }  
-        } finally {
-            scanFile.delete();
-        }
+        int read = in.read(buffer, 0, Math.min(idatSize, 4096));
+        while (read > 0) {
+            crc.update(buffer, 0, read);
+            out.write(buffer, 0, read);
+            idatSize -= read;
+            
+            read = in.read(buffer, 0, Math.min(idatSize, 4096));
+        }  
 
         out.write(ByteBuffer.allocate(4).putInt((int) crc.getValue()).array());
     }
