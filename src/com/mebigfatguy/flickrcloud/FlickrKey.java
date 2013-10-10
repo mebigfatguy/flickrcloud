@@ -17,20 +17,29 @@
  */
 package com.mebigfatguy.flickrcloud;
 
-import java.io.File;
-import java.util.Map;
+import javax.swing.JOptionPane;
 
-import com.flickr4java.flickr.Flickr;
-import com.flickr4java.flickr.REST;
+public class FlickrKey {
 
-public class FlickrPublisher {
+    private static String KEY = null;
+    private static String SECRET = null;
     
-    private  Flickr flickr;
-    
-    public FlickrPublisher() {
-        flickr = new Flickr(FlickrKey.getKey(), FlickrKey.getSecret(), new REST());
+    private FlickrKey() {  
     }
     
-    public void publish(Map<String, File> images) {
+    public static String getKey() {
+        if (KEY == null) {
+            KEY = JOptionPane.showInputDialog(null, FCBundle.getString(FCBundle.Keys.KEY_PROMPT));
+        }
+        
+        return KEY;
+    }
+    
+    public static String getSecret() {
+        if (SECRET == null) {
+            SECRET = JOptionPane.showInputDialog(null, FCBundle.getString(FCBundle.Keys.SECRET_PROMPT));
+        }
+        
+        return SECRET;
     }
 }

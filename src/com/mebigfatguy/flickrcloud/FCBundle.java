@@ -21,7 +21,9 @@ import java.util.ResourceBundle;
 
 public class FCBundle {
     enum Keys {
-        TITLE;
+        TITLE,
+        KEY_PROMPT,
+        SECRET_PROMPT;
     }
     
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("strings");
