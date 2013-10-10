@@ -17,14 +17,15 @@
 
     <path id="flickrcloud.classpath">
         <pathelement location="${classes.dir}"/>
-        <pathelement location="${lib.dir}/httpclient-${httpclient.version}"/>
-        <pathelement location="${lib.dir}/httpcore-${httpcore.version}"/>
+        <pathelement location="${lib.dir}/flickr-${flickr.version}"/>
+        <pathelement location="${lib.dir}/scribe-${scribe.version}"/>
+        <pathelement location="${lib.dir}/commons-codec-${commons-codec.version}"/>
     </path>
         
    <target name="yank">
         <mkdir dir="${lib.dir}"/>
         <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" proxyServer="${proxy.server}" source="true">
-            <server url="http://repo1.maven.org/maven2"/>
+        	<server url="http://jcenter.bintray.com"/>
             <generateVersions propertyFileName="${basedir}/version.properties" />
         </yank:yank>
     </target>

@@ -18,14 +18,20 @@
 package com.mebigfatguy.flickrcloud;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class FlickrCloud {
 
 	public static void main(String[] args) {
-		FCFrame fpf = new FCFrame();
-		fpf.setLocationRelativeTo(null);
-		fpf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		fpf.setVisible(true);
+	    try {
+    		FCFrame fpf = new FCFrame();
+    		fpf.setLocationRelativeTo(null);
+    		fpf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    		fpf.setVisible(true);
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(null, e.getClass().getSimpleName() + ": " + e.getMessage());
+	        System.exit(-1);
+	    }
 
 	}
 }

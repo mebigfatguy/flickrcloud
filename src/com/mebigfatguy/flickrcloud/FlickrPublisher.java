@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.Map;
 
 public class FlickrPublisher {
-
+    
     public void publish(Map<String, File> images) {
 
     }

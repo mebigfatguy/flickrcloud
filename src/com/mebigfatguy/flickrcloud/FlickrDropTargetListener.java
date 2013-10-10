@@ -25,6 +25,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +35,11 @@ import javax.swing.JOptionPane;
 public class FlickrDropTargetListener implements DropTargetListener {
 
     private FCDropTarget target;
+    private FlickrPublisher publisher;
     
-    public FlickrDropTargetListener(FCDropTarget component) {
+    public FlickrDropTargetListener(FCDropTarget component) throws IOException {
         target = component;
+        publisher = new FlickrPublisher();
     }
     
     @Override
@@ -66,7 +69,6 @@ public class FlickrDropTargetListener implements DropTargetListener {
             if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                 PngGenerator generator = new PngGenerator();
                 Map<String, File> images = generator.generate((List<File>) t.getTransferData(DataFlavor.javaFileListFlavor));
-                FlickrPublisher publisher = new FlickrPublisher();
                 publisher.publish(images);
                 target.add(images.keySet());
             }

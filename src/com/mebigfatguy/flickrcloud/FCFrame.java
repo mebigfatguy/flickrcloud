@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.dnd.DropTarget;
+import java.io.IOException;
 import java.util.Set;
 
 import javax.swing.JFrame;
@@ -34,7 +35,7 @@ public class FCFrame extends JFrame implements FCDropTarget  {
     private final DropLabel store;
 	private final FileListModel model;
 
-	public FCFrame() {
+	public FCFrame() throws IOException {
 		super(FCBundle.getString(FCBundle.Keys.TITLE));
 
 		Container cp = getContentPane();
