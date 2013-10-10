@@ -28,9 +28,22 @@ public class FlickrPublisher {
     private  Flickr flickr;
     
     public FlickrPublisher() {
-        flickr = new Flickr(FlickrKey.getKey(), FlickrKey.getSecret(), new REST());
+        initFlickr();
     }
     
     public void publish(Map<String, File> images) {
+        initFlickr();
+    }
+    
+    private void initFlickr() {
+        if (flickr == null) {
+            String apiKey = FlickrKey.getKey();
+            if (apiKey != null) {
+                String secret = FlickrKey.getSecret();
+                if (secret != null) {
+                    flickr = new Flickr(FlickrKey.getKey(), FlickrKey.getSecret(), new REST());
+                }
+            } 
+        }
     }
 }

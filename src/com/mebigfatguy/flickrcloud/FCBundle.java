@@ -23,7 +23,10 @@ public class FCBundle {
     enum Keys {
         TITLE,
         KEY_PROMPT,
-        SECRET_PROMPT;
+        API_KEY,
+        SECRET,
+        OK,
+        CANCEL;
     }
     
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("strings");
