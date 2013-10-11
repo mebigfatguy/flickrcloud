@@ -25,6 +25,7 @@ public class FCBundle {
         KEY_PROMPT,
         API_KEY,
         SECRET,
+        ENTER_VERIFICATION_CODE,
         OK,
         CANCEL;
     }

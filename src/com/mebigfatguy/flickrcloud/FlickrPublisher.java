@@ -17,15 +17,25 @@
  */
 package com.mebigfatguy.flickrcloud;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.net.URI;
 import java.util.Map;
+
+import org.scribe.model.Token;
+import org.scribe.model.Verifier;
+
+import javax.swing.JOptionPane;
 
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.REST;
+import com.flickr4java.flickr.auth.AuthInterface;
+import com.flickr4java.flickr.auth.Permission;
 
 public class FlickrPublisher {
     
     private  Flickr flickr;
+    private Token accessToken;
     
     public FlickrPublisher() {
         initFlickr();
@@ -33,6 +43,9 @@ public class FlickrPublisher {
     
     public void publish(Map<String, File> images) {
         initFlickr();
+        if (flickr == null) {
+            return;
+        }     
     }
     
     private void initFlickr() {
@@ -42,8 +55,29 @@ public class FlickrPublisher {
                 String secret = FlickrKey.getSecret();
                 if (secret != null) {
                     flickr = new Flickr(FlickrKey.getKey(), FlickrKey.getSecret(), new REST());
+                    AuthInterface auth = flickr.getAuthInterface();
+                    Token t = auth.getRequestToken();
+                    String authURL = auth.getAuthorizationUrl(t, Permission.WRITE);
+                    
+                    String verifierString = getVerifierString(authURL);
+                    
+                    accessToken = auth.getAccessToken(t,  new Verifier(verifierString));
                 }
             } 
+            
+            if (accessToken == null) {
+                flickr = null;
+            }
+        }
+    }
+    
+    private String getVerifierString(String authURL) {
+        try {
+            Desktop.getDesktop().browse(new URI(authURL));
+            
+            return JOptionPane.showInputDialog(FCBundle.getString(FCBundle.Keys.ENTER_VERIFICATION_CODE));
+        } catch (Exception ioe) {
+            return null;
         }
     }
 }
