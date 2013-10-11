@@ -28,9 +28,13 @@ import org.scribe.model.Verifier;
 import javax.swing.JOptionPane;
 
 import com.flickr4java.flickr.Flickr;
+import com.flickr4java.flickr.FlickrException;
 import com.flickr4java.flickr.REST;
+import com.flickr4java.flickr.RequestContext;
 import com.flickr4java.flickr.auth.AuthInterface;
 import com.flickr4java.flickr.auth.Permission;
+import com.flickr4java.flickr.uploader.UploadMetaData;
+import com.flickr4java.flickr.uploader.Uploader;
 
 public class FlickrPublisher {
     
@@ -41,11 +45,29 @@ public class FlickrPublisher {
         initFlickr();
     }
     
-    public void publish(Map<String, File> images) {
+    public void publish(Map<String, File> images) throws FlickrException {
         initFlickr();
         if (flickr == null) {
             return;
-        }     
+        }
+        
+        AuthInterface auth = flickr.getAuthInterface();
+        RequestContext.getRequestContext().setAuth(auth.checkToken(accessToken));
+        
+        UploadMetaData meta = new UploadMetaData();
+        meta.setAsync(false);
+        meta.setContentType(Flickr.CONTENTTYPE_OTHER);
+        meta.setFamilyFlag(false);
+        meta.setFriendFlag(false);
+        meta.setPublicFlag(false);
+        meta.setSafetyLevel(Flickr.SAFETYLEVEL_SAFE);
+        
+        Uploader uploader = flickr.getUploader();
+        for (Map.Entry<String, File> entry : images.entrySet()) {
+
+            meta.setTitle(entry.getKey());
+            uploader.upload(entry.getValue(), meta);
+        }
     }
     
     private void initFlickr() {
@@ -63,7 +85,7 @@ public class FlickrPublisher {
                     
                     accessToken = auth.getAccessToken(t,  new Verifier(verifierString));
                 }
-            } 
+            }
             
             if (accessToken == null) {
                 flickr = null;
