@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +40,20 @@ import java.util.zip.ZipOutputStream;
 
 public class PngGenerator {
 
-    private static byte[] PNG_HEADER = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
-    private static byte[] IHDR = "IHDR".getBytes();
-    private static byte[] FLCD = "flCD".getBytes();
-    private static byte[] IDAT = "IDAT".getBytes();
-    private static byte[] IEND = "IEND".getBytes();
+    private static final byte[] PNG_HEADER = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+    private static final  byte[] IHDR;
+    private static final  byte[] FLCD;
+    private static final  byte[] IDAT;
+    private static final  byte[] IEND;
+    
+    static
+    {
+        Charset cs = Charset.forName("UTF-8");
+        IHDR = "IHDR".getBytes(cs);
+        FLCD = "flCD".getBytes(cs);
+        IDAT = "IDAT".getBytes(cs);
+        IEND = "IEND".getBytes(cs);
+    }     
     
     private static final int MAX_IDAT_SIZE = 1024 * 1024;
     
