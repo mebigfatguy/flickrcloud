@@ -63,6 +63,9 @@
             <manifest>
                 <attribute name="flickrcloud-version" value="${flickrcloud.version}" />
                 <attribute name="Main-Class" value="com.mebigfatguy.flickrcloud.FlickrCloud" />
+                <attribute name="Application-Name" value="FlickrCloud" />
+                <attribute name="Permissions" value="all-permissions" />
+                <attribute name="Codebase" value="*" />
                 <attribute name="Bundle-ManifestVersion" value="2" />
                 <attribute name="Bundle-Name" value="flickrcloud" />
                 <attribute name="Bundle-SymbolicName" value="flickrcloud; singleton:=true" />
