@@ -76,6 +76,8 @@ public class FlickrKey extends JDialog {
         JLabel secretLabel = new JLabel(FCBundle.getString(FCBundle.Keys.SECRET));
         JTextField apiKey = new JTextField(25);
         JTextField secret = new JTextField(25);
+        apiKeyLabel.setLabelFor(apiKey);
+        secretLabel.setLabelFor(secret);
         hGroup.addGroup(glayout.createParallelGroup().addComponent(apiKeyLabel).addComponent(secretLabel));
         hGroup.addGroup(glayout.createParallelGroup().addComponent(apiKey).addComponent(secret));
         glayout.setHorizontalGroup(hGroup);
