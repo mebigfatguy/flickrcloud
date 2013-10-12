@@ -58,7 +58,7 @@ public class PngGenerator {
     private static final int MAX_IDAT_SIZE = 1024 * 1024;
     
     public Map<String, File> generate(List<File> transferData) throws IOException {
-        Map<String, File> images = new HashMap<String, File>();
+        Map<String, File> images = new HashMap<>();
         for (File sourceFile : transferData) {
             File f;
             if (sourceFile.isDirectory()) {

@@ -27,7 +27,7 @@ import javax.swing.AbstractListModel;
 public class FileListModel extends AbstractListModel<String> {
 
     private static final long serialVersionUID = 557430370553467263L;
-    private List<String> files = new ArrayList<String>();
+    private List<String> files = new ArrayList<>();
     
     public void resetFiles(Collection<String> newFiles) {
         files.clear();
