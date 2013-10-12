@@ -25,7 +25,6 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class FlickrDropTargetListener implements DropTargetListener {
     private FCDropTarget target;
     private FlickrPublisher publisher;
     
-    public FlickrDropTargetListener(FCDropTarget component) throws IOException {
+    public FlickrDropTargetListener(FCDropTarget component) {
         target = component;
         publisher = new FlickrPublisher();
     }

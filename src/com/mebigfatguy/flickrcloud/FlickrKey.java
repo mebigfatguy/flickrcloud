@@ -31,10 +31,12 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
 public class FlickrKey extends JDialog {
 
+    private static final long serialVersionUID = 1190300422775263643L;
     private static String KEY = null;
     private static String SECRET = null;
     
@@ -116,7 +118,7 @@ public class FlickrKey extends JDialog {
         
         d.pack();
         d.setLocationRelativeTo(null);
-        d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        d.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         d.setModal(true);
         d.setVisible(true);
         
