@@ -31,12 +31,16 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.CRC32;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
 
 public class PngGenerator {
 
@@ -61,13 +65,21 @@ public class PngGenerator {
         Map<String, File> images = new HashMap<>();
         for (File sourceFile : transferData) {
             File f;
+            boolean isImage = false;
             if (sourceFile.isDirectory()) {
                 f = createDirectoryZip(sourceFile);
             } else {
                 f = sourceFile;
+                int dotPos = f.getName().lastIndexOf('.');
+                if (dotPos >= 0) {
+                    Iterator<ImageWriter> it = ImageIO.getImageWritersBySuffix(f.getName().substring(dotPos+1));
+                    isImage = it.hasNext();
+                }
             }
             
-            f = createImageFile(f, sourceFile);
+            if (!isImage) {
+                f = createImageFile(f, sourceFile);
+            }
             
             images.put(f.getName(), f);
         }
