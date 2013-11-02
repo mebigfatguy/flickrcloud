@@ -17,13 +17,13 @@
 
     <path id="flickrcloud.classpath">
         <pathelement location="${classes.dir}"/>
-        <pathelement location="${lib.dir}/flickr-${flickr.version}"/>
-        <pathelement location="${lib.dir}/scribe-${scribe.version}"/>
-        <pathelement location="${lib.dir}/commons-codec-${commons-codec.version}"/>
-        <pathelement location="${lib.dir}/slf4j-api-${slf4j-api.version}"/>
-        <pathelement location="${lib.dir}/log4j-over-slf4j-${log4j-over-slf4j.version}"/>
-        <pathelement location="${lib.dir}/logback-classic-${logback-classic.version}"/>
-        <pathelement location="${lib.dir}/logback-core-${logback-core.version}"/>
+        <pathelement location="${lib.dir}/flickr-${flickr.version}.jar"/>
+        <pathelement location="${lib.dir}/scribe-${scribe.version}.jar"/>
+        <pathelement location="${lib.dir}/commons-codec-${commons-codec.version}.jar"/>
+        <pathelement location="${lib.dir}/slf4j-api-${slf4j-api.version}.jar"/>
+        <pathelement location="${lib.dir}/log4j-over-slf4j-${log4j-over-slf4j.version}.jar"/>
+        <pathelement location="${lib.dir}/logback-classic-${logback-classic.version}.jar"/>
+        <pathelement location="${lib.dir}/logback-core-${logback-core.version}.jar"/>
     </path>
         
    <target name="yank">
