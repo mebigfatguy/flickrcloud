@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,21 +43,6 @@ import javax.imageio.ImageWriter;
 
 public class PngGenerator {
 
-    private static final byte[] PNG_HEADER = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
-    private static final  byte[] IHDR;
-    private static final  byte[] FLCD;
-    private static final  byte[] IDAT;
-    private static final  byte[] IEND;
-    
-    static
-    {
-        Charset cs = Charset.forName("UTF-8");
-        IHDR = "IHDR".getBytes(cs);
-        FLCD = "flCD".getBytes(cs);
-        IDAT = "IDAT".getBytes(cs);
-        IEND = "IEND".getBytes(cs);
-    }     
-    
     private static final int MAX_IDAT_SIZE = 1024 * 1024;
     
     public Map<String, File> generate(List<File> transferData) throws IOException {
@@ -141,13 +125,13 @@ public class PngGenerator {
         int height = (int) ((numPixels + width - 1) / width);
         
         try (RandomAccessFile raf = new RandomAccessFile(pngFile, "rw")) {
-            raf.write(PNG_HEADER);
+            raf.write(PngConstants.PNG_HEADER);
 
             writeIHDR(raf, width, height);
             
             writeFLCD(raf, file, sourceFile);
             
-            writeIDATs(raf, file, width, height);
+            writeIDATs(raf, file, width);
             
             writeIEND(raf);
         }
@@ -160,7 +144,7 @@ public class PngGenerator {
         DataOutputStream dos = new DataOutputStream(baos);
         
         dos.writeInt(4 + 4 + 1 + 1 + 1 + 1 + 1);
-        dos.write(IHDR);
+        dos.write(PngConstants.IHDR);
         dos.writeInt(width);
         dos.writeInt(height);
         dos.write(8);
@@ -190,7 +174,7 @@ public class PngGenerator {
         byte[] sourceFileName = sourceFile.getName().getBytes("UTF-8");
         
         dos.writeInt(8 + 4 + sourceFileName.length + 1);
-        dos.write(FLCD);
+        dos.write(PngConstants.FLCD);
         dos.writeLong(file.length());
         dos.writeInt(sourceFileName.length);
         dos.write(sourceFileName);
@@ -209,7 +193,7 @@ public class PngGenerator {
         out.write(baos.toByteArray());
     }
     
-    private void writeIDATs(DataOutput out, File file, int width, int height) throws IOException {
+    private void writeIDATs(DataOutput out, File file, int width) throws IOException {
         File scanFile = File.createTempFile(file.getName(), ".scan");
         scanFile.deleteOnExit();
         
@@ -243,10 +227,10 @@ public class PngGenerator {
     private void writeIDAT(DataOutput out, InputStream in, long remaining) throws IOException {
         int idatSize = (int) Math.min(remaining, MAX_IDAT_SIZE);
         out.write(ByteBuffer.allocate(4).putInt(idatSize).array());
-        out.write(IDAT);
+        out.write(PngConstants.IDAT);
         
         CRC32 crc = new CRC32();
-        crc.update(IDAT);
+        crc.update(PngConstants.IDAT);
         byte[] buffer = new byte[4096];
         
         int read = in.read(buffer, 0, Math.min(idatSize, 4096));
@@ -266,7 +250,7 @@ public class PngGenerator {
         DataOutputStream dos = new DataOutputStream(baos);
         
         dos.writeInt(0);
-        dos.write(IEND);
+        dos.write(PngConstants.IEND);
         
         dos.flush();
         
