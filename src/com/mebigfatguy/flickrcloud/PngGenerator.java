@@ -143,7 +143,7 @@ public class PngGenerator {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         
-        dos.writeInt(4 + 4 + 1 + 1 + 1 + 1 + 1);
+        dos.writeInt(PngConstants.IHDR_SIZE);
         dos.write(PngConstants.IHDR);
         dos.writeInt(width);
         dos.writeInt(height);

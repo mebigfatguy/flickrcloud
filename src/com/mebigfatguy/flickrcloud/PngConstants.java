@@ -27,6 +27,8 @@ public class PngConstants {
     public static final  byte[] IDAT;
     public static final  byte[] IEND;
     
+    public static final int IHDR_SIZE = 4 + 4 + 1 + 1 + 1 + 1 + 1;
+    
     static
     {
         Charset cs = Charset.forName("UTF-8");
