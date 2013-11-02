@@ -265,6 +265,9 @@ public class PngGenerator {
         out.write(baos.toByteArray());
     }
     
+    /**
+     * the first byte of the scanline is a flag, so we ignore this byte.
+     */
     private boolean readScanLine(InputStream is, byte[] scanLine) throws IOException {
         
         int start = 1;
