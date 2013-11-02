@@ -1,4 +1,4 @@
-<project name="flickrcloud" default="jar" basedir="." xmlns:yank="antlib:com.mebigfatguy.yank">
+<project name="flickrcloud" default="info" basedir="." xmlns:yank="antlib:com.mebigfatguy.yank">
     
     <property file="user.properties" />
     <property file="build.properties" />
@@ -26,6 +26,14 @@
         <pathelement location="${lib.dir}/logback-core-${logback-core.version}.jar"/>
     </path>
         
+    <target name="info">
+    	<echo message="FlickrCloud - a Drag and Drop file storage client that uses the flickr 'cloud' as a storage medium"/>
+    	<echo message=""/>
+    	<echo message="    this project uses yank (https://github.com/mebigfatguy/yank) for dependency management"/>
+    	<echo message="    download yank.jar and place in ant/lib directory"/>
+    	<echo message="    http://search.maven.org/#artifactdetails%7Ccom.mebigfatguy.yank%7Cyank%7C0.4.2%7Cjar"/>
+    </target>
+	
    <target name="yank">
         <mkdir dir="${lib.dir}"/>
         <yank:yank yankFile="${basedir}/yank.xls" destination="${lib.dir}" proxyServer="${proxy.server}" source="true">
