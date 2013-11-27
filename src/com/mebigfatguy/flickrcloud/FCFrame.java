@@ -21,13 +21,12 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.dnd.DropTarget;
-import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
-import com.flickr4java.flickr.photos.Photo;
+import com.mebigfatguy.flickrcloud.FileListModel.PhotoWrapper;
 
 public class FCFrame extends JFrame implements FCDropTarget  {
 	
@@ -48,7 +47,7 @@ public class FCFrame extends JFrame implements FCDropTarget  {
 		store.setDropTarget(dropTarget);
 		
 		model = new FileListModel();
-		JList<Photo> files = new JList<Photo>(model);
+		JList<PhotoWrapper> files = new JList<>(model);
 		files.setPreferredSize(store.getPreferredSize());
 		
         store.addMouseListener(new FilesPopulator(model));

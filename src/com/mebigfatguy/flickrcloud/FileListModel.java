@@ -25,26 +25,27 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 
 import com.flickr4java.flickr.photos.Photo;
+import com.mebigfatguy.flickrcloud.FileListModel.PhotoWrapper;
 
-public class FileListModel extends AbstractListModel<Photo> {
+public class FileListModel extends AbstractListModel<PhotoWrapper> {
 
     private static final long serialVersionUID = 557430370553467263L;
     
-    private static Comparator<Photo> PHOTO_COMPARATOR = new Comparator<Photo>() {
-        public int compare(Photo p1, Photo p2) {
-            return p1.getId().compareTo(p2.getId());
+    private static Comparator<PhotoWrapper> PHOTO_COMPARATOR = new Comparator<PhotoWrapper>() {
+        public int compare(PhotoWrapper p1, PhotoWrapper p2) {
+            return p1.photo.getId().compareTo(p2.photo.getId());
         }
     };
     
-    private List<Photo> files = new ArrayList<>();
+    private List<PhotoWrapper> files = new ArrayList<>();
     
     public void clear() {
         files.clear();
     }
     
     public void addPhoto(Photo photo) {
-        files.add(photo);
-        Collections.<Photo>sort(files, PHOTO_COMPARATOR);
+        files.add(new PhotoWrapper(photo));
+        Collections.<PhotoWrapper>sort(files, PHOTO_COMPARATOR);
         fireContentsChanged(this, 0, files.size());
     }
     
@@ -54,7 +55,20 @@ public class FileListModel extends AbstractListModel<Photo> {
     }
 
     @Override
-    public Photo getElementAt(int index) {
+    public PhotoWrapper getElementAt(int index) {
         return files.get(index);
+    }
+    
+    static class PhotoWrapper {
+        Photo photo;
+        
+        public PhotoWrapper(Photo ph) {
+            photo = ph;
+        }
+        
+        @Override
+        public String toString() {
+            return photo.getTitle();
+        }
     }
 }

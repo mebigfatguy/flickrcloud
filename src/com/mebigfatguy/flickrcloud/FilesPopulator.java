@@ -19,12 +19,14 @@ package com.mebigfatguy.flickrcloud;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import com.flickr4java.flickr.Flickr;
-import com.flickr4java.flickr.collections.Collection;
-import com.flickr4java.flickr.collections.CollectionsInterface;
+import com.flickr4java.flickr.RequestContext;
+import com.flickr4java.flickr.people.User;
 import com.flickr4java.flickr.photos.Photo;
+import com.flickr4java.flickr.photos.PhotoList;
 
 public class FilesPopulator extends MouseAdapter {
 
@@ -43,14 +45,15 @@ public class FilesPopulator extends MouseAdapter {
             }
             
             model.clear();
-            CollectionsInterface inf = flickr.getCollectionsInterface();
-            List<Collection> collections = inf.getTree(null, null);
-            for (Collection c : collections) {
-                for (Photo photo : c.getPhotos()) {
-                    model.addPhoto(photo);
-                }
+            
+            User u = RequestContext.getRequestContext().getAuth().getUser();
+            PhotoList<Photo> photos = flickr.getPeopleInterface().getPhotos(u.getId(), null, null, null, null, null, Flickr.CONTENTTYPE_OTHER, null, null, 0, 0);
+
+            for (Photo photo : photos) {
+                model.addPhoto(photo);
             }
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
