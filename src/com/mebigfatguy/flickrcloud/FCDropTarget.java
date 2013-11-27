@@ -18,7 +18,6 @@
 package com.mebigfatguy.flickrcloud;
 
 import java.awt.Component;
-import java.util.Set;
 
 public interface FCDropTarget {
     void setHilite();
