@@ -18,25 +18,33 @@
 package com.mebigfatguy.flickrcloud;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.AbstractListModel;
 
-public class FileListModel extends AbstractListModel<String> {
+import com.flickr4java.flickr.photos.Photo;
+
+public class FileListModel extends AbstractListModel<Photo> {
 
     private static final long serialVersionUID = 557430370553467263L;
-    private List<String> files = new ArrayList<>();
     
-    public void resetFiles(Collection<String> newFiles) {
+    private static Comparator<Photo> PHOTO_COMPARATOR = new Comparator<Photo>() {
+        public int compare(Photo p1, Photo p2) {
+            return p1.getId().compareTo(p2.getId());
+        }
+    };
+    
+    private List<Photo> files = new ArrayList<>();
+    
+    public void clear() {
         files.clear();
-        addFiles(newFiles);
     }
     
-    public void addFiles(Collection<String> newFiles) {
-        files.addAll(newFiles);
-        Collections.sort(files);
+    public void addPhoto(Photo photo) {
+        files.add(photo);
+        Collections.<Photo>sort(files, PHOTO_COMPARATOR);
         fireContentsChanged(this, 0, files.size());
     }
     
@@ -46,7 +54,7 @@ public class FileListModel extends AbstractListModel<String> {
     }
 
     @Override
-    public String getElementAt(int index) {
+    public Photo getElementAt(int index) {
         return files.get(index);
     }
 }

@@ -38,21 +38,14 @@ import com.flickr4java.flickr.uploader.Uploader;
 
 public class FlickrPublisher {
     
-    private  Flickr flickr;
-    private Token accessToken;
-    
     public FlickrPublisher() {
-        initFlickr();
     }
     
     public void publish(Map<String, File> images) throws FlickrException {
-        initFlickr();
+        Flickr flickr = FlickrFactory.getFlickr();
         if (flickr == null) {
             return;
         }
-        
-        AuthInterface auth = flickr.getAuthInterface();
-        RequestContext.getRequestContext().setAuth(auth.checkToken(accessToken));
         
         UploadMetaData meta = new UploadMetaData();
         meta.setAsync(false);
@@ -67,39 +60,6 @@ public class FlickrPublisher {
 
             meta.setTitle(entry.getKey());
             uploader.upload(entry.getValue(), meta);
-        }
-    }
-    
-    private void initFlickr() {
-        if (flickr == null) {
-            String apiKey = FlickrKey.getKey();
-            if (apiKey != null) {
-                String secret = FlickrKey.getSecret();
-                if (secret != null) {
-                    flickr = new Flickr(FlickrKey.getKey(), FlickrKey.getSecret(), new REST());
-                    AuthInterface auth = flickr.getAuthInterface();
-                    Token t = auth.getRequestToken();
-                    String authURL = auth.getAuthorizationUrl(t, Permission.WRITE);
-                    
-                    String verifierString = getVerifierString(authURL);
-                    
-                    accessToken = auth.getAccessToken(t,  new Verifier(verifierString));
-                }
-            }
-            
-            if (accessToken == null) {
-                flickr = null;
-            }
-        }
-    }
-    
-    private String getVerifierString(String authURL) {
-        try {
-            Desktop.getDesktop().browse(new URI(authURL));
-            
-            return JOptionPane.showInputDialog(FCBundle.getString(FCBundle.Keys.ENTER_VERIFICATION_CODE));
-        } catch (Exception ioe) {
-            return null;
         }
     }
 }

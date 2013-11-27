@@ -23,6 +23,5 @@ import java.util.Set;
 public interface FCDropTarget {
     void setHilite();
     void setNormal();
-    void add(Set<String> descriptor);
     Component getDropOwner();
 }

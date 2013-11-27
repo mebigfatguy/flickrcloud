@@ -27,6 +27,8 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
+import com.flickr4java.flickr.photos.Photo;
+
 public class FCFrame extends JFrame implements FCDropTarget  {
 	
     private static final long serialVersionUID = 4415151392343515256L;
@@ -46,8 +48,10 @@ public class FCFrame extends JFrame implements FCDropTarget  {
 		store.setDropTarget(dropTarget);
 		
 		model = new FileListModel();
-		JList<String> files = new JList<String>(model);
+		JList<Photo> files = new JList<Photo>(model);
 		files.setPreferredSize(store.getPreferredSize());
+		
+        store.addMouseListener(new FilesPopulator(model));
 
 		cp.add(store);
 		cp.add(new JScrollPane(files));
@@ -63,11 +67,6 @@ public class FCFrame extends JFrame implements FCDropTarget  {
     @Override
     public void setNormal() {
         store.setNormal();
-    }
-
-    @Override
-    public void add(Set<String> descriptors) {
-        model.addFiles(descriptors);
     }
 
     @Override
