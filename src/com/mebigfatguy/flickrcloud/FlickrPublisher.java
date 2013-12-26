@@ -17,22 +17,11 @@
  */
 package com.mebigfatguy.flickrcloud;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.net.URI;
 import java.util.Map;
-
-import org.scribe.model.Token;
-import org.scribe.model.Verifier;
-
-import javax.swing.JOptionPane;
 
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.FlickrException;
-import com.flickr4java.flickr.REST;
-import com.flickr4java.flickr.RequestContext;
-import com.flickr4java.flickr.auth.AuthInterface;
-import com.flickr4java.flickr.auth.Permission;
 import com.flickr4java.flickr.uploader.UploadMetaData;
 import com.flickr4java.flickr.uploader.Uploader;
 
