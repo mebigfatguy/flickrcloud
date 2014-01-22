@@ -56,8 +56,7 @@ public class FCFrame extends JFrame implements FCDropTarget  {
 		files.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		files.setDragEnabled(true);
 		
-		DragSource ds = new DragSource();
-		DragGestureRecognizer dgr = ds.createDefaultDragGestureRecognizer(files, DnDConstants.ACTION_COPY_OR_MOVE, new FlickrDragSourceListener(files));
+		FlickrDragSourceListener dsListener = new FlickrDragSourceListener(files);
 		
         store.addMouseListener(new FilesPopulator(model));
 

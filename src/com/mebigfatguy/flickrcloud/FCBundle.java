@@ -27,7 +27,8 @@ public class FCBundle {
         SECRET,
         ENTER_VERIFICATION_CODE,
         OK,
-        CANCEL;
+        CANCEL,
+        SAVE;
     }
     
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("strings");

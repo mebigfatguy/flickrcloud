@@ -21,12 +21,19 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,12 +44,21 @@ import javax.swing.border.EtchedBorder;
 public class FlickrKey extends JDialog {
 
     private static final long serialVersionUID = 1190300422775263643L;
+    private static final String FLICKR_DIR = ".flickrcloud";
+    private static final String FLICKR_PROP_FILE = ".data.properties";
+    private static final String KEY_PROP = "key";
+    private static final String SECRET_PROP = "secret";
+    
     private static String KEY = null;
     private static String SECRET = null;
     
     private boolean ok = false;
     
-    private FlickrKey() {  
+    static {
+        loadKeys();
+    }
+    
+    private FlickrKey() {
     }
     
     public static String getKey() {
@@ -76,8 +92,8 @@ public class FlickrKey extends JDialog {
         GroupLayout.SequentialGroup hGroup = glayout.createSequentialGroup();
         JLabel apiKeyLabel = new JLabel(FCBundle.getString(FCBundle.Keys.API_KEY));
         JLabel secretLabel = new JLabel(FCBundle.getString(FCBundle.Keys.SECRET));
-        JTextField apiKey = new JTextField(25);
-        JTextField secret = new JTextField(25);
+        final JTextField apiKey = new JTextField(25);
+        final JTextField secret = new JTextField(25);
         apiKeyLabel.setLabelFor(apiKey);
         secretLabel.setLabelFor(secret);
         hGroup.addGroup(glayout.createParallelGroup().addComponent(apiKeyLabel).addComponent(secretLabel));
@@ -96,6 +112,12 @@ public class FlickrKey extends JDialog {
         JPanel ctrlPanel = new JPanel();
         ctrlPanel.setLayout(new BoxLayout(ctrlPanel, BoxLayout.X_AXIS));
         ctrlPanel.add(Box.createHorizontalStrut(10));
+        
+        final JCheckBox saveKeysButton = new JCheckBox(FCBundle.getString(FCBundle.Keys.SAVE));
+        ctrlPanel.add(saveKeysButton);
+        ctrlPanel.add(Box.createHorizontalGlue());
+        ctrlPanel.add(Box.createHorizontalStrut(10));
+        
         JButton cancelButton = new JButton(FCBundle.getString(FCBundle.Keys.CANCEL));
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -103,10 +125,21 @@ public class FlickrKey extends JDialog {
             }
         });
         ctrlPanel.add(cancelButton);
-        ctrlPanel.add(Box.createHorizontalGlue());
+        ctrlPanel.add(Box.createHorizontalStrut(10));
+        
         JButton okButton = new JButton(FCBundle.getString(FCBundle.Keys.OK));
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
+                Thread t = new Thread(new Runnable() {
+                   public void run() {
+                       if (saveKeysButton.isSelected())
+                           saveKeys(apiKey.getText(), secret.getText());
+                       else
+                           deleteKeys();
+                   }
+                });
+                t.start();
+
                 d.ok = true;
                 d.dispose();
             }
@@ -130,5 +163,40 @@ public class FlickrKey extends JDialog {
     
     boolean isOK() {
         return ok;
+    }
+    
+    private static void saveKeys(String key, String secret) {
+        Properties p = new Properties();
+        p.setProperty(KEY_PROP, key);
+        p.setProperty(SECRET_PROP,  secret);
+        
+        File dir = new File(System.getProperty("user.home"), FLICKR_DIR);
+        dir.mkdirs();
+        
+        File propFile = new File(dir, FLICKR_PROP_FILE);
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(propFile))) {
+            p.store(bos, "");
+        } catch (Exception e) {
+            propFile.delete();
+        }
+    }
+    
+    private static void deleteKeys() {
+        File dir = new File(System.getProperty("user.home"), FLICKR_DIR);
+        File propFile = new File(dir, FLICKR_PROP_FILE);
+        propFile.delete();
+    }
+    
+    private static void loadKeys() {
+        File dir = new File(System.getProperty("user.home"), FLICKR_DIR);
+        File propFile = new File(dir, FLICKR_PROP_FILE);
+        
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(propFile))) {
+            Properties p = new Properties();
+            p.load(bis);
+            KEY = p.getProperty(KEY_PROP);
+            SECRET = p.getProperty(SECRET_PROP);
+        } catch (Exception e) {
+        }
     }
 }
