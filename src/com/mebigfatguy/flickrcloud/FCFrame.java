@@ -20,11 +20,15 @@ package com.mebigfatguy.flickrcloud;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureRecognizer;
+import java.awt.dnd.DragSource;
 import java.awt.dnd.DropTarget;
 
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 
 import com.mebigfatguy.flickrcloud.FileListModel.PhotoWrapper;
 
@@ -49,6 +53,11 @@ public class FCFrame extends JFrame implements FCDropTarget  {
 		model = new FileListModel();
 		JList<PhotoWrapper> files = new JList<>(model);
 		files.setPreferredSize(store.getPreferredSize());
+		files.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		files.setDragEnabled(true);
+		
+		DragSource ds = new DragSource();
+		DragGestureRecognizer dgr = ds.createDefaultDragGestureRecognizer(files, DnDConstants.ACTION_COPY_OR_MOVE, new FlickrDragSourceListener(files));
 		
         store.addMouseListener(new FilesPopulator(model));
 
