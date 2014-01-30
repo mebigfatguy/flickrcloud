@@ -75,12 +75,12 @@ public class FlickrDragSourceListener implements DragSourceListener, DragGesture
 
             @Override
             public DataFlavor[] getTransferDataFlavors() {
-                return null;
+                return new DataFlavor[] {DataFlavor.javaFileListFlavor};
             }
 
             @Override
             public boolean isDataFlavorSupported(DataFlavor flavor) {
-                return false;
+                return flavor.isFlavorJavaFileListType();
             }
 
             @Override
