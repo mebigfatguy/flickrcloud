@@ -44,7 +44,7 @@ public class FlickrDragSourceListener implements DragSourceListener, DragGesture
     public FlickrDragSourceListener(JList l) {
         list = l;
         
-        source = new DragSource();
+        source = DragSource.getDefaultDragSource();
         recognizer = source.createDefaultDragGestureRecognizer(list, DnDConstants.ACTION_COPY_OR_MOVE, this);
     }
     
@@ -89,6 +89,6 @@ public class FlickrDragSourceListener implements DragSourceListener, DragGesture
             }
             
         };
-        source.startDrag(dge, DragSource.DefaultCopyDrop, transferable, this);
+        dge.startDrag(null, transferable, this);
     }
 }
