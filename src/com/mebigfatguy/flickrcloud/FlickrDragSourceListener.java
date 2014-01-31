@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JList;
 
@@ -89,12 +90,9 @@ public class FlickrDragSourceListener implements DragSourceListener, DragGesture
             @Override
             public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
                 List<PhotoWrapper> photos = list.getSelectedValuesList();
-                List<File> files = new ArrayList<>(photos.size());
                 
-                for (PhotoWrapper wrapper : photos) {
-                    /* we've got to pull the file out of this photowrapper, but for now.. */                   
-                    files.add(new File(wrapper.photo.getTitle()));
-                }
+                FileGenerator generator = new FileGenerator();
+                List<File> files = generator.generate(photos);
 
                 return files;
             }
