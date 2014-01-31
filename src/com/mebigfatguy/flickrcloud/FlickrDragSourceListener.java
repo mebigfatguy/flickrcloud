@@ -88,11 +88,10 @@ public class FlickrDragSourceListener implements DragSourceListener, DragGesture
 
             @Override
             public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-                Object[] objs = list.getSelectedValues();
-                List<File> files = new ArrayList<>(objs.length);
+                List<PhotoWrapper> photos = list.getSelectedValuesList();
+                List<File> files = new ArrayList<>(photos.size());
                 
-                for (Object o : objs) {
-                    PhotoWrapper wrapper = (PhotoWrapper) o;
+                for (PhotoWrapper wrapper : photos) {
                     /* we've got to pull the file out of this photowrapper, but for now.. */                   
                     files.add(new File(wrapper.photo.getTitle()));
                 }
