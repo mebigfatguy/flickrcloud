@@ -29,8 +29,10 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
 import java.awt.dnd.DragSourceListener;
+import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JList;
 
@@ -86,9 +88,16 @@ public class FlickrDragSourceListener implements DragSourceListener, DragGesture
 
             @Override
             public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-                PhotoWrapper wrapper = list.getSelectedValue();
-                /* we've got to pull the file out of this photowrapper */
-                return Arrays.asList(wrapper);
+                Object[] objs = list.getSelectedValues();
+                List<File> files = new ArrayList<>(objs.length);
+                
+                for (Object o : objs) {
+                    PhotoWrapper wrapper = (PhotoWrapper) o;
+                    /* we've got to pull the file out of this photowrapper, but for now.. */                   
+                    files.add(new File(wrapper.photo.getTitle()));
+                }
+
+                return files;
             }
             
         };
