@@ -1,7 +1,7 @@
 /*
  * flickrcloud - A file storage facility tool using flickr storage
- * Copyright 2013 MeBigFatGuy.com
- * Copyright 2013 Dave Brosius
+ * Copyright 2013-2014 MeBigFatGuy.com
+ * Copyright 2013-2014 Dave Brosius
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,9 +44,10 @@ public class FileGenerator {
     private File createFile(String url) throws MalformedURLException, IOException {
         URL u = new URL(url);
         File pngFile = File.createTempFile("png", ".png");
+        System.out.println(u);
         try (BufferedInputStream bis = new BufferedInputStream(u.openStream());
              BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(pngFile))) {
-
+            System.out.println("File opened");
             byte[] data = new byte[2048];
             int len = bis.read(data);
             while (len >= 0) {
