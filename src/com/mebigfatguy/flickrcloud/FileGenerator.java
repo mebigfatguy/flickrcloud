@@ -19,12 +19,15 @@ package com.mebigfatguy.flickrcloud;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.DataInput;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.mebigfatguy.flickrcloud.FileListModel.PhotoWrapper;
@@ -35,7 +38,9 @@ public class FileGenerator {
         
         List<File> files = new ArrayList<File>();
         for (PhotoWrapper wrapper : photos) {
-            files.add(createFile(wrapper.photo.getUrl()));
+            File pngFile = createFile(wrapper.photo.getUrl());
+            files.add(readDatFile(pngFile));
+            pngFile.delete();
         }
         
         return files;
@@ -44,6 +49,7 @@ public class FileGenerator {
     private File createFile(String url) throws MalformedURLException, IOException {
         URL u = new URL(url);
         File pngFile = File.createTempFile("png", ".png");
+        pngFile.deleteOnExit();
         System.out.println(u);
         try (BufferedInputStream bis = new BufferedInputStream(u.openStream());
              BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(pngFile))) {
@@ -58,4 +64,38 @@ public class FileGenerator {
         
         return pngFile;
     }
+    
+    private File readDatFile(File pngFile) throws IOException {
+        File datFile = File.createTempFile("dat", ".dat");
+        datFile.deleteOnExit();
+        try (RandomAccessFile raf = new RandomAccessFile(pngFile, "r")) {
+            byte[] type = null;
+            do {
+                PngSectionHeader hdr = readChunk(raf);
+                type = hdr.getType();
+                byte[] data = new byte[hdr.getLength()];
+                raf.readFully(data);
+                
+                if (Arrays.equals(type, PngConstants.IHDR)) {
+                    
+                } else if (Arrays.equals(type, PngConstants.FLCD)) {
+                    
+                } else if (Arrays.equals(type, PngConstants.IDAT)) {
+                    
+                }
+            } while (!Arrays.equals(type, PngConstants.IEND));
+        }
+        
+        return datFile;
+    }
+    
+    private PngSectionHeader readChunk(DataInput din) throws IOException {
+        int len = din.readInt();
+        byte[] type = new byte[PngConstants.PNG_TYPE_SIZE];
+        din.readFully(type);
+        
+        return new PngSectionHeader(len, type);
+    }
+    
+    
 }

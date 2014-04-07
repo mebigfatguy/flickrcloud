@@ -17,29 +17,28 @@
  */
 package com.mebigfatguy.flickrcloud;
 
-import java.nio.charset.Charset;
+import java.util.Arrays;
 
-public class PngConstants {
+public class PngSectionHeader {
 
-    static final byte[] PNG_HEADER = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
-    static final  byte[] IHDR;
-    static final  byte[] FLCD;
-    static final  byte[] IDAT;
-    static final  byte[] IEND;
+    private int length;
+    byte[] type;
     
-    static final int IHDR_SIZE = 4 + 4 + 1 + 1 + 1 + 1 + 1;
+    public PngSectionHeader(int len, byte[] pngType) {
+        length = len;
+        type = pngType;
+    }
     
-    static final int PNG_TYPE_SIZE = 4;
+    public int getLength() {
+        return length;
+    }
     
-    static
-    {
-        Charset cs = Charset.forName("UTF-8");
-        IHDR = "IHDR".getBytes(cs);
-        FLCD = "flCD".getBytes(cs);
-        IDAT = "IDAT".getBytes(cs);
-        IEND = "IEND".getBytes(cs);
-    }   
+    public byte[] getType() {
+        return type;
+    }
     
-    private PngConstants() {
+    @Override
+    public String toString() {
+        return "Length: " + length + " Type: " + Arrays.toString(type);
     }
 }
