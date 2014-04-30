@@ -35,6 +35,7 @@ public class FCFrame extends JFrame implements FCDropTarget  {
     
     private final DropLabel store;
 	private final FileListModel model;
+	private final FlickrDragSourceListener dsListener;
 
 	public FCFrame() {
 		super(FCBundle.getString(FCBundle.Keys.TITLE));
@@ -52,7 +53,7 @@ public class FCFrame extends JFrame implements FCDropTarget  {
 		files.setPreferredSize(store.getPreferredSize());
 		files.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
-		FlickrDragSourceListener dsListener = new FlickrDragSourceListener(files);
+		dsListener = new FlickrDragSourceListener(files);
 		
         store.addMouseListener(new FilesPopulator(model));
 
