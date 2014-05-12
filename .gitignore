@@ -3,3 +3,4 @@ classes
 *.jar
 version.properties
 .settings
+target
