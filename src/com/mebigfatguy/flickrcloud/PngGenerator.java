@@ -115,7 +115,7 @@ public class PngGenerator {
         }
     }
     
-    private File createImageFile(File file, File sourceFile) throws IOException {
+    private static File createImageFile(File file, File sourceFile) throws IOException {
         File pngFile = File.createTempFile(file.getName(), ".png");
         pngFile.deleteOnExit();
         
@@ -139,7 +139,7 @@ public class PngGenerator {
         return pngFile;
     }
 
-    private void writeIHDR(DataOutput out, int width, int height) throws IOException {
+    private static void writeIHDR(DataOutput out, int width, int height) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         
@@ -166,7 +166,7 @@ public class PngGenerator {
         out.write(baos.toByteArray());
     }
     
-    private void writeFLCD(DataOutput out, File file, File sourceFile) throws IOException {
+    private static void writeFLCD(DataOutput out, File file, File sourceFile) throws IOException {
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
@@ -193,7 +193,7 @@ public class PngGenerator {
         out.write(baos.toByteArray());
     }
     
-    private void writeIDATs(DataOutput out, File file, int width) throws IOException {
+    private static void writeIDATs(DataOutput out, File file, int width) throws IOException {
         File scanFile = File.createTempFile(file.getName(), ".scan");
         scanFile.deleteOnExit();
         
@@ -224,7 +224,7 @@ public class PngGenerator {
         }
     }
     
-    private void writeIDAT(DataOutput out, InputStream in, long remaining) throws IOException {
+    private static void writeIDAT(DataOutput out, InputStream in, long remaining) throws IOException {
         int idatSize = (int) Math.min(remaining, MAX_IDAT_SIZE);
         out.write(ByteBuffer.allocate(4).putInt(idatSize).array());
         out.write(PngConstants.IDAT);
@@ -245,7 +245,7 @@ public class PngGenerator {
         out.write(ByteBuffer.allocate(4).putInt((int) crc.getValue()).array());
     }
     
-    private void writeIEND(DataOutput out) throws IOException {
+    private static void writeIEND(DataOutput out) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         
@@ -268,7 +268,7 @@ public class PngGenerator {
     /**
      * the first byte of the scanline is a flag, so we ignore this byte.
      */
-    private boolean readScanLine(InputStream is, byte[] scanLine) throws IOException {
+    private static boolean readScanLine(InputStream is, byte[] scanLine) throws IOException {
         
         int start = 1;
         int length = scanLine.length - 1;

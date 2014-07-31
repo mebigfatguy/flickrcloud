@@ -120,6 +120,7 @@ public class FlickrKey extends JDialog {
         
         JButton cancelButton = new JButton(FCBundle.getString(FCBundle.Keys.CANCEL));
         cancelButton.addActionListener(new ActionListener() {
+        	@Override
             public void actionPerformed(ActionEvent ae) {
                 d.dispose();
             }
@@ -129,9 +130,11 @@ public class FlickrKey extends JDialog {
         
         JButton okButton = new JButton(FCBundle.getString(FCBundle.Keys.OK));
         okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+            @Override
+			public void actionPerformed(ActionEvent ae) {
                 Thread t = new Thread(new Runnable() {
-                   public void run() {
+                   @Override
+				public void run() {
                        if (saveKeysButton.isSelected())
                            saveKeys(apiKey.getText(), secret.getText());
                        else

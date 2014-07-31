@@ -46,7 +46,7 @@ public class FileGenerator {
         return files;
     }
 
-    private File createFile(String url) throws MalformedURLException, IOException {
+    private static File createFile(String url) throws MalformedURLException, IOException {
         URL u = new URL(url);
         File pngFile = File.createTempFile("png", ".png");
         pngFile.deleteOnExit();
@@ -65,7 +65,7 @@ public class FileGenerator {
         return pngFile;
     }
     
-    private File readDatFile(File pngFile) throws IOException {
+    private static File readDatFile(File pngFile) throws IOException {
         File datFile = File.createTempFile("dat", ".dat");
         datFile.deleteOnExit();
         try (RandomAccessFile raf = new RandomAccessFile(pngFile, "r")) {
@@ -89,7 +89,7 @@ public class FileGenerator {
         return datFile;
     }
     
-    private PngSectionHeader readChunk(DataInput din) throws IOException {
+    private static PngSectionHeader readChunk(DataInput din) throws IOException {
         int len = din.readInt();
         byte[] type = new byte[PngConstants.PNG_TYPE_SIZE];
         din.readFully(type);

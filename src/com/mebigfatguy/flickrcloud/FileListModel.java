@@ -32,12 +32,13 @@ public class FileListModel extends AbstractListModel<PhotoWrapper> {
     private static final long serialVersionUID = 557430370553467263L;
     
     private static Comparator<PhotoWrapper> PHOTO_COMPARATOR = new Comparator<PhotoWrapper>() {
+    	@Override
         public int compare(PhotoWrapper p1, PhotoWrapper p2) {
             return p1.photo.getId().compareTo(p2.photo.getId());
         }
     };
     
-    private List<PhotoWrapper> files = new ArrayList<>();
+    private final List<PhotoWrapper> files = new ArrayList<>();
     
     public void clear() {
         files.clear();

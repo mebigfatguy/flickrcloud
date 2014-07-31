@@ -63,7 +63,7 @@ public class PngParser {
         return null;
     }
     
-    private boolean readSectionHeader(DataInputStream dis, PngSectionHeader header) throws IOException {
+    private static boolean readSectionHeader(DataInputStream dis, PngSectionHeader header) throws IOException {
         header.size = dis.readInt();
         dis.readFully(header.type);
         
