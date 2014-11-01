@@ -90,9 +90,7 @@ public class FlickrDragSourceListener implements DragSourceListener, DragGesture
                 List<PhotoWrapper> photos = list.getSelectedValuesList();
                 
                 FileGenerator generator = new FileGenerator();
-                List<File> files = generator.generate(photos);
-
-                return files;
+                return generator.generate(photos);
             }
             
         };
