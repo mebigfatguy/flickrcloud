@@ -31,7 +31,7 @@
     	<echo message="FlickrCloud - a Drag and Drop file storage client that uses the flickr 'cloud' as a storage medium"/>
     	<echo message=""/>
     	<echo message="    this project uses yank (https://github.com/mebigfatguy/yank) for dependency management"/>
-    	<echo message="    download yank.jar and place in ant/lib directory"/>
+    	<echo message="    download yank.jar and place in ~/ant/lib directory"/>
     	<echo message="    http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.mebigfatguy.yank%22"/>
     </target>
 	
