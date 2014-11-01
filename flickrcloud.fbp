@@ -1,5 +1,5 @@
 <Project projectName="flickrcloud">
-  <Jar>././classes</Jar>
+  <Jar>./target/classes</Jar>
   <AuxClasspathEntry>./lib/commons-codec-1.9.jar</AuxClasspathEntry>
   <AuxClasspathEntry>./lib/flickr-2.5.jar</AuxClasspathEntry>
   <AuxClasspathEntry>./lib/logback-classic-1.0.13.jar</AuxClasspathEntry>
