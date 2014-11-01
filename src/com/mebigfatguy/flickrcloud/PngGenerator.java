@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -171,7 +172,7 @@ public class PngGenerator {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         
-        byte[] sourceFileName = sourceFile.getName().getBytes("UTF-8");
+        byte[] sourceFileName = sourceFile.getName().getBytes(StandardCharsets.UTF_8);
         
         dos.writeInt(8 + 4 + sourceFileName.length + 1);
         dos.write(PngConstants.FLCD);
