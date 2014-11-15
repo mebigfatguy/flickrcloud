@@ -20,10 +20,10 @@ package com.mebigfatguy.flickrcloud;
 import java.awt.Desktop;
 import java.net.URI;
 
+import javax.swing.JOptionPane;
+
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
-
-import javax.swing.JOptionPane;
 
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.REST;
